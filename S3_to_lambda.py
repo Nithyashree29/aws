@@ -14,4 +14,4 @@ def lambda_handler(event, context):
 
     # Read the content using pandas
     data = pd.read_csv(StringIO(file_content))
-    print(data)
+    print("the data is", data)
