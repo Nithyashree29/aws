@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     response = requests.get("https://www.google.com/")
     print(requests.text)
 
