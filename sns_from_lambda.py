@@ -28,4 +28,4 @@ def lambda_handler(event, context):
 
 # Add required permission to lambda to access S3 , what ever.
 # Add the trigger s3
-# Add topic as standard and you can use any subscriptions like example email is what you use here for above script
+# Add topic as standard and you can use any subscriptions like example email is what you use here.
