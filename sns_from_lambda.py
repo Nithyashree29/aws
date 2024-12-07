@@ -3,7 +3,7 @@ import pandas as pd
 
 s3_client = boto3.client('s3')
 sns_client = boto3.client('sns')
-sns_arn = 'arn:aws:sns:us-east-1:851725469799:s3-arrival-notification'
+sns_arn = 'arn:aws:sns:us-east-1:354918394448:sns-to-lambda-s3'
 
 def lambda_handler(event, context):
     # TODO implement
@@ -25,3 +25,7 @@ def lambda_handler(event, context):
         print(err)
         message = "Input S3 File {} processing is Failed !!".format("s3://"+bucket_name+"/"+s3_file_key)
         respone = sns_client.publish(Subject="FAILED - Daily Data Processing", TargetArn=sns_arn, Message=message, MessageStructure='text')
+
+# Add required permission to lambda to access S3 , what ever.
+# Add the trigger s3
+# Add topic as standard and you can use any subscriptions like example email is what you use here 
