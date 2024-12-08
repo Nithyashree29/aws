@@ -2,7 +2,7 @@ import json
 import boto3
 import random
 
-sqs_client = boto3.client("s3")
+sqs_client = boto3.client("sqs")
 
 QUEUE_URL = ''
 
