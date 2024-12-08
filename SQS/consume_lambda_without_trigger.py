@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     messages = response.get('Messages', [])
     print("Total messages received in the batch : ", len(messages))
     for message in messages:
-        print("Processing message: ", message['body'])
+        print("Processing message: ", message['Body'])
         receipt_handle = message['ReceiptHandle']
         sqs.delete_message(
             QueueUrl = queue_url,
@@ -28,3 +28,5 @@ def lambda_handler(event, context):
         'StatusCode': 200,
         'body': f'{len(messages)} messages processes and deleted successfully'
     }
+
+# Here there is no trigger so we bring event brigde schedular to scheduke our lambda
