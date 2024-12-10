@@ -1,0 +1,75 @@
+--- Command to create schema in Redshift
+
+CREATE SCHEMA sales_data_mart;
+
+================================================================
+
+--- Command to create table in Redshift
+
+CREATE TABLE sales_data_mart.sales_raw (
+    id INT ENCODE lzo,
+    date DATE ENCODE bytedict,
+    product VARCHAR(255) ENCODE lzo,
+    quantity INT ENCODE delta,
+    revenue DECIMAL(10,2) ENCODE delta
+)
+DISTSTYLE KEY
+DISTKEY (date)
+SORTKEY (date , product);
+
+================================================================
+
+--- Command to load data in Redshift table
+
+COPY sales_data_mart.sales_raw
+FROM 's3://for-redshift-demo/sales.csv' 
+IAM_ROLE 'arn:aws:iam::851725469799:role/redshift_role'
+DELIMITER ','
+IGNOREHEADER 1
+REGION 'us-east-1';
+
+================================================================
+
+--- Command to unload query result from Redshift to S3 in multiparts
+
+UNLOAD ('SELECT * FROM sales_data_mart.sales_raw WHERE date = ''2023-08-01''') 
+TO 's3://for-redshift-demo/unload_output/' 
+IAM_ROLE 'arn:aws:iam::851725469799:role/redshift_role' 
+DELIMITER ','
+ADDQUOTES
+ALLOWOVERWRITE
+REGION 'us-east-1';
+
+================================================================
+
+--- Command to unload query result from Redshift to S3 in single file
+
+UNLOAD ('SELECT * FROM sales_data_mart.sales_raw WHERE date = ''2023-08-01''') 
+TO 's3://for-redshift-demo/unload_output/' 
+IAM_ROLE 'arn:aws:iam::851725469799:role/redshift_role' 
+FORMAT AS CSV
+DELIMITER ','
+ALLOWOVERWRITE
+REGION 'us-east-1'
+PARALLEL OFF;
+
+================================================================
+
+--- Command to unload query result from Redshift to S3 along with manifest file
+
+UNLOAD ('SELECT * FROM sales_data_mart.sales_raw WHERE date = ''2023-08-01''') 
+TO 's3://for-redshift-demo/unload_output/' 
+IAM_ROLE 'arn:aws:iam::851725469799:role/redshift_role' 
+FORMAT AS CSV
+DELIMITER ','
+ALLOWOVERWRITE
+REGION 'us-east-1'
+MANIFEST;
+
+================================================================
+
+--- Command to load data from S3 to Redshift table using manifest
+
+COPY sales_data_mart.sales_raw_with_manifest 
+FROM 's3://your-bucket/path/to/import/sales-data.manifest' IAM_ROLE 'arn:aws:iam::851725469799:role/redshift_role' DELIMITER ','
+MANIFEST;
